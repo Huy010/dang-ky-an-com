@@ -1,789 +1,664 @@
 <!DOCTYPE html>
-<html lang="vi" class="h-full bg-[#F8FAFC]">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nhật Ký Đăng Ký Cơm - Swiss Editorial Minimalism</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Ký Đăng Ký Cơm Công Ty</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #fafafa;
+            --border-color: #e5e7eb;
+            --border-dark: #111827;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+        }
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 3rem;
+        }
 
-  <!-- Google Font: Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        .app-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-          colors: {
-            slate: {
-              850: '#111827',
-              900: '#0F172A',
+        .header-box {
+            border-bottom: 2px solid var(--border-dark);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .app-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .control-panel {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label-custom {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+            display: block;
+        }
+
+        .form-control-custom, .form-select-custom {
+            border: 1px solid var(--border-color);
+            border-radius: 0;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: none !important;
+        }
+
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: var(--border-dark);
+        }
+
+        .calendar-wrapper {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1px solid var(--border-color);
+            background-color: #f9fafb;
+        }
+
+        .day-label {
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .day-label:last-child {
+            border-right: none;
+        }
+
+        .calendar-body {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+
+        .calendar-cell {
+            min-height: 105px;
+            border-right: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #ffffff;
+            user-select: none;
+            transition: background-color 0.15s ease;
+            position: relative;
+        }
+
+        .calendar-cell:nth-child(7n) {
+            border-right: none;
+        }
+
+        .calendar-cell.other-month {
+            background-color: #fcfcfc;
+            color: #d1d5db;
+            cursor: default;
+        }
+
+        .calendar-cell.active-day {
+            cursor: pointer;
+        }
+
+        .calendar-cell.active-day:hover {
+            background-color: #f9fafb;
+        }
+
+        .calendar-cell.weekend {
+            background-color: #fafafa;
+        }
+
+        .calendar-cell.registered {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        .cell-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .today-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            background: #000;
+            color: #fff;
+            padding: 2px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .calendar-cell.registered .today-badge {
+            background: #fff;
+            color: #000;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: auto;
+            text-align: right;
+        }
+
+        .registered .status-badge {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .unregistered .status-badge {
+            color: var(--text-muted);
+        }
+
+        .btn-custom {
+            border-radius: 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            transition: all 0.15s ease;
+        }
+
+        .btn-dark-custom {
+            background: #000000;
+            color: #ffffff;
+            border: 1px solid #000000;
+        }
+
+        .btn-dark-custom:hover {
+            background: #222222;
+            color: #ffffff;
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline-custom:hover {
+            background: #f3f4f6;
+            border-color: var(--border-dark);
+        }
+
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--border-dark);
+            padding: 1.25rem;
+        }
+
+        .summary-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .summary-total {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #000000;
+        }
+
+        .history-table {
+            border: 1px solid var(--border-color);
+            background: #fff;
+            width: 100%;
+            font-size: 0.85rem;
+        }
+
+        .history-table th, .history-table td {
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-table th {
+            background: #f9fafb;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .calendar-cell {
+                min-height: 80px;
+                padding: 0.35rem;
             }
-          }
+            .day-number {
+                font-size: 0.85rem;
+            }
+            .status-badge {
+                font-size: 0.65rem;
+            }
         }
-      }
-    }
-  </script>
-
-  <style>
-    /* Custom Swiss Minimalist Styles */
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #0F172A;
-      background-color: #F8FAFC;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Grid layout crisp 1px borders without overlapping */
-    .swiss-grid-container {
-      border: 1px solid #E2E8F0;
-    }
-
-    .swiss-grid-cell {
-      border-right: 1px solid #E2E8F0;
-      border-bottom: 1px solid #E2E8F0;
-    }
-
-    .swiss-grid-cell:nth-child(7n) {
-      border-right: none;
-    }
-
-    /* Number typography formatting */
-    .tabular-nums {
-      font-variant-numeric: tabular-nums;
-    }
-
-    /* Minimal custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #F1F5F9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #CBD5E1;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94A3B8;
-    }
-  </style>
+    </style>
 </head>
-<body class="min-h-full flex flex-col justify-between selection:bg-slate-900 selection:text-white">
+<body>
 
-  <!-- Top Minimalist Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="app-container">
+    <div class="header-box d-flex justify-content-between align-items-center flex-wrap gap-2">
         <div>
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-2 h-2 bg-slate-900"></span>
-            <span class="text-[11px] font-bold tracking-[0.2em] text-slate-500 uppercase">Corporate Meal Registry</span>
-          </div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 mt-1">
-            NHẬT KÝ ĐĂNG KÝ CƠM
-          </h1>
+            <h1 class="app-title m-0"><i class="fa-solid fa-utensils me-2"></i>Nhật Ký Đăng Ký Cơm</h1>
+            <p class="text-muted small m-0 mt-1">Hệ thống ghi nhận và quản lý chi phí cơm công ty</p>
         </div>
-
-        <!-- Header Actions -->
-        <div class="flex items-center gap-2 text-xs">
-          <button id="btnOpenYearly" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 font-medium transition-colors uppercase tracking-wider">
-            <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-            Thống Kê Năm
-          </button>
-
-          <button id="btnExport" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 font-medium transition-colors uppercase tracking-wider">
-            <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Xuất JSON
-          </button>
-
-          <button id="btnImport" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 font-medium transition-colors uppercase tracking-wider">
-            <svg class="w-3.5 h-3.5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-            Nhập JSON
-          </button>
-          <input type="file" id="importFileInput" accept=".json" class="hidden">
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-custom btn-custom" onclick="exportData()"><i class="fa-solid fa-download me-1"></i>Xuất File</button>
+            <label class="btn btn-outline-custom btn-custom mb-0" style="cursor:pointer;">
+                <i class="fa-solid fa-upload me-1"></i>Nhập File
+                <input type="file" id="importInput" accept=".json" onchange="importData(event)" hidden>
+            </label>
         </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Workspace Container -->
-  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-
-    <!-- Top Control Panel (Month Selector + Meal Price) -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8">
-      
-      <!-- Month & Year Selector -->
-      <div class="md:col-span-7 bg-white p-4 border border-slate-200 flex flex-col justify-between gap-3">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Thời gian làm việc</span>
-          <span class="text-xs font-mono text-slate-500" id="currentPeriodLabel">2026 / 09</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <div class="inline-flex border border-slate-300">
-            <button id="btnPrevMonth" title="Tháng trước" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-800 transition-colors border-r border-slate-300">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-            </button>
-            <button id="btnToday" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-800 text-xs font-medium uppercase tracking-wider transition-colors border-r border-slate-300">
-              Hôm Nay
-            </button>
-            <button id="btnNextMonth" title="Tháng sau" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-800 transition-colors">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-            </button>
-          </div>
-          <input type="month" id="monthPicker" class="border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-900 bg-white focus:outline-none focus:border-slate-900 w-full sm:w-auto">
-        </div>
-      </div>
-
-      <!-- Meal Unit Price Setting -->
-      <div class="md:col-span-5 bg-white p-4 border border-slate-200 flex flex-col justify-between gap-3">
-        <div class="flex items-center justify-between">
-          <label for="priceInput" class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Đơn giá suất ăn</label>
-          <span class="text-[11px] text-slate-400">Tự động lưu</span>
-        </div>
-        <div class="relative flex items-center">
-          <input type="text" id="priceInput" value="35,000" class="w-full border border-slate-300 px-3 py-1.5 text-lg font-bold tabular-nums text-slate-900 focus:outline-none focus:border-slate-900 pr-16">
-          <span class="absolute right-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">VNĐ</span>
-        </div>
-      </div>
     </div>
 
-    <!-- KPI Summary Cards (Swiss Metric Layout) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-200 border border-slate-200 mb-8">
-      
-      <!-- KPI 1 -->
-      <div class="bg-white p-5 flex flex-col justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Ngày làm việc (T2-T6)</span>
-        <div class="mt-3 flex items-baseline justify-between">
-          <span class="text-2xl sm:text-3xl font-bold tabular-nums text-slate-900" id="statWorkingDays">0</span>
-          <span class="text-xs text-slate-400 font-medium">ngày</span>
+    <div class="control-panel">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3 col-6">
+                <label class="form-label-custom">Tháng</label>
+                <select id="monthSelect" class="form-select form-select-custom" onchange="renderCalendar()">
+                </select>
+            </div>
+            <div class="col-md-3 col-6">
+                <label class="form-label-custom">Năm</label>
+                <select id="yearSelect" class="form-select form-select-custom" onchange="renderCalendar()">
+                </select>
+            </div>
+            <div class="col-md-3 col-6">
+                <label class="form-label-custom">Giá Cơm / Suất (VNĐ)</label>
+                <input type="number" id="priceInput" class="form-control form-control-custom" value="35000" step="1000" onchange="savePriceAndRender()">
+            </div>
+            <div class="col-md-3 col-6 d-flex gap-1">
+                <button class="btn btn-dark-custom btn-custom w-100" onclick="quickSelectWeekdays()"><i class="fa-solid fa-check-double me-1"></i>T2-T6</button>
+                <button class="btn btn-outline-custom btn-custom w-100" onclick="clearAllMonth()"><i class="fa-solid fa-trash-can me-1"></i>Xóa</button>
+            </div>
         </div>
-      </div>
-
-      <!-- KPI 2 -->
-      <div class="bg-white p-5 flex flex-col justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Suất cơm đã đăng ký</span>
-        <div class="mt-3 flex items-baseline justify-between">
-          <span class="text-2xl sm:text-3xl font-bold tabular-nums text-slate-900" id="statRegisteredDays">0</span>
-          <span class="text-xs text-slate-400 font-medium">buổi</span>
-        </div>
-      </div>
-
-      <!-- KPI 3 -->
-      <div class="bg-white p-5 flex flex-col justify-between">
-        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Đơn giá áp dụng</span>
-        <div class="mt-3 flex items-baseline justify-between">
-          <span class="text-xl sm:text-2xl font-semibold tabular-nums text-slate-900" id="statUnitPrice">0 đ</span>
-          <span class="text-xs text-slate-400 font-medium">/ suất</span>
-        </div>
-      </div>
-
-      <!-- KPI 4: Primary Highlight -->
-      <div class="bg-slate-900 p-5 flex flex-col justify-between text-white">
-        <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">TỔNG CHI PHÍ THÁNG</span>
-        <div class="mt-3 flex items-baseline justify-between">
-          <span class="text-2xl sm:text-3xl font-bold tabular-nums tracking-tight text-white" id="statTotalCost">0 đ</span>
-          <span class="text-[10px] text-slate-400 uppercase tracking-widest">Thanh toán</span>
-        </div>
-      </div>
     </div>
 
-    <!-- Interactive Calendar Grid Section -->
-    <div class="bg-white border border-slate-200 p-4 sm:p-6">
-      
-      <!-- Calendar Header Controls -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 mb-4">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 uppercase tracking-tight" id="calendarTitle">
-            Lịch Đăng Ký Cơm
-          </h2>
-          <p class="text-xs text-slate-500 mt-0.5">Nhấp chuột vào ngày bất kỳ để thay đổi trạng thái đăng ký suất ăn.</p>
+    <div class="calendar-wrapper">
+        <div class="calendar-header">
+            <div class="day-label">T2</div>
+            <div class="day-label">T3</div>
+            <div class="day-label">T4</div>
+            <div class="day-label">T5</div>
+            <div class="day-label">T6</div>
+            <div class="day-label text-danger">T7</div>
+            <div class="day-label text-danger">CN</div>
         </div>
-
-        <!-- Quick Action Buttons -->
-        <div class="flex items-center gap-2">
-          <button id="btnSelectWeekdays" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-semibold uppercase tracking-wider transition-colors border border-slate-200">
-            Chọn tất cả T2 – T6
-          </button>
-          <button id="btnClearAll" class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-semibold uppercase tracking-wider transition-colors border border-slate-200">
-            Bỏ chọn tất cả
-          </button>
+        <div class="calendar-body" id="calendarBody">
         </div>
-      </div>
-
-      <!-- Day Headers (T2 -> CN) -->
-      <div class="grid grid-cols-7 text-center border-b border-slate-200 mb-px bg-slate-50">
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-700">T2</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-700">T3</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-700">T4</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-700">T5</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-700">T6</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100/50">T7</div>
-        <div class="py-2.5 text-[11px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100/50">CN</div>
-      </div>
-
-      <!-- Calendar Days Grid -->
-      <div id="calendarGrid" class="grid grid-cols-7 swiss-grid-container bg-white">
-        <!-- Rendered dynamically by JavaScript -->
-      </div>
-
-      <!-- Legend Footer -->
-      <div class="flex flex-wrap items-center justify-end gap-6 mt-4 pt-4 border-t border-slate-100 text-xs text-slate-500">
-        <div class="flex items-center gap-2">
-          <span class="w-3.5 h-3.5 bg-slate-900 border border-slate-900 inline-block"></span>
-          <span>Đã đăng ký</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="w-3.5 h-3.5 bg-white border border-slate-300 inline-block"></span>
-          <span>Không ăn</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="w-3.5 h-3.5 bg-slate-100 border border-slate-200 inline-block"></span>
-          <span>Cuối tuần</span>
-        </div>
-      </div>
-
     </div>
 
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-400">
-    <div class="max-w-6xl mx-auto px-4">
-      <p class="uppercase tracking-widest text-[10px] text-slate-400 font-semibold mb-1">Editorial Swiss Design System</p>
-      <p>Dữ liệu được lưu trữ trực tiếp trên trình duyệt của bạn (LocalStorage) • Tuyệt đối bảo mật & Riêng tư</p>
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="summary-card text-center">
+                <div class="summary-title">Số Ngày Trong Tháng</div>
+                <div class="summary-value" id="daysInMonthVal">0</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-card text-center">
+                <div class="summary-title">Đã Đăng Ký</div>
+                <div class="summary-value" id="registeredDaysVal">0 suất</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-card text-center">
+                <div class="summary-title">Đơn Giá Suất</div>
+                <div class="summary-value" id="unitPriceVal">0 đ</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="summary-card text-center" style="border-width: 2px;">
+                <div class="summary-title">Tổng Tiền Phải Trả</div>
+                <div class="summary-total" id="totalAmountVal">0 đ</div>
+            </div>
+        </div>
     </div>
-  </footer>
 
-  <!-- Yearly Overview Modal (Dialog Overlay) -->
-  <div id="yearlyModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm hidden">
-    <div class="bg-white border border-slate-300 w-full max-w-3xl max-h-[90vh] flex flex-col shadow-xl">
-      
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-        <div>
-          <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Báo cáo tổng hợp</span>
-          <h3 class="text-lg font-bold text-slate-900">TỔNG QUAN ĐĂNG KÝ THEO NĂM</h3>
+    <div class="control-panel mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="m-0 fw-bold text-uppercase" style="letter-spacing:0.05em;"><i class="fa-solid fa-chart-simple me-2"></i>Thống Kê Lịch Sử Cả Năm <span id="annualYearText"></span></h6>
         </div>
-        <button id="btnCloseYearly" class="text-slate-400 hover:text-slate-900 p-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 overflow-y-auto flex-grow space-y-6">
-        
-        <!-- Year Select Bar -->
-        <div class="flex items-center gap-3">
-          <label for="yearlyYearSelect" class="text-xs font-bold uppercase tracking-wider text-slate-600">Chọn năm xem báo cáo:</label>
-          <select id="yearlyYearSelect" class="border border-slate-300 px-3 py-1.5 text-sm font-bold text-slate-900 bg-white focus:outline-none focus:border-slate-900">
-            <!-- Populated dynamically -->
-          </select>
+        <div class="table-responsive">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Tháng</th>
+                        <th class="text-center">Số Suất Đăng Ký</th>
+                        <th class="text-end">Đơn Giá Suất</th>
+                        <th class="text-end">Tổng Tiền (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody id="annualTableBody">
+                </tbody>
+                <tfoot>
+                    <tr class="fw-bold bg-light">
+                        <td>TỔNG CẢ NĂM</td>
+                        <td class="text-center" id="annualTotalDays">0 suất</td>
+                        <td class="text-end">-</td>
+                        <td class="text-end" id="annualTotalMoney">0 đ</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-
-        <!-- Yearly Table -->
-        <div class="border border-slate-200 overflow-x-auto">
-          <table class="w-full text-left text-xs tabular-nums">
-            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-bold text-[10px] tracking-wider">
-              <tr>
-                <th class="py-3 px-4">Tháng</th>
-                <th class="py-3 px-4 text-center">Số buổi đăng ký</th>
-                <th class="py-3 px-4 text-right">Ước tính chi phí</th>
-                <th class="py-3 px-4 text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody id="yearlyTableBody" class="divide-y divide-slate-200">
-              <!-- Populated dynamically -->
-            </tbody>
-            <tfoot class="bg-slate-900 text-white font-bold">
-              <tr>
-                <td class="py-3.5 px-4 text-xs uppercase tracking-wider">TỔNG CỘNG NĂM</td>
-                <td id="yearlyTotalDays" class="py-3.5 px-4 text-center text-sm">0 buổi</td>
-                <td id="yearlyTotalAmount" class="py-3.5 px-4 text-right text-sm">0 đ</td>
-                <td></td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 text-right">
-        <button id="btnCloseYearlyFooter" class="px-4 py-2 bg-slate-900 text-white text-xs font-semibold uppercase tracking-wider hover:bg-slate-800 transition-colors">
-          Đóng cửa sổ
-        </button>
-      </div>
     </div>
-  </div>
+</div>
 
-  <!-- Minimal Toast Notification -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 border border-slate-700 shadow-lg flex items-center gap-3 transition-all duration-300 transform translate-y-10 opacity-0 pointer-events-none">
-    <span class="w-2 h-2 bg-emerald-400 rounded-full inline-block"></span>
-    <span id="toastMessage">Thông báo ứng dụng</span>
-  </div>
-
-  <script>
-    // LocalStorage Keys
-    const STORAGE_PREFIX = 'swiss_meal_reg_v2_';
-    const KEY_MEAL_PRICE = STORAGE_PREFIX + 'unit_price';
-
-    // Application State
+<script>
     let currentYear = new Date().getFullYear();
-    let currentMonth = new Date().getMonth(); // 0 - 11
+    let currentMonth = new Date().getMonth();
     let mealPrice = 35000;
-    let monthData = []; // Array of registered day numbers for YYYY-MM
 
-    // DOM Elements
-    const monthPicker = document.getElementById('monthPicker');
-    const priceInput = document.getElementById('priceInput');
-    const btnPrevMonth = document.getElementById('btnPrevMonth');
-    const btnNextMonth = document.getElementById('btnNextMonth');
-    const btnToday = document.getElementById('btnToday');
-    const calendarGrid = document.getElementById('calendarGrid');
-    const calendarTitle = document.getElementById('calendarTitle');
-    const currentPeriodLabel = document.getElementById('currentPeriodLabel');
-
-    // Stats Elements
-    const statWorkingDays = document.getElementById('statWorkingDays');
-    const statRegisteredDays = document.getElementById('statRegisteredDays');
-    const statUnitPrice = document.getElementById('statUnitPrice');
-    const statTotalCost = document.getElementById('statTotalCost');
-
-    // Quick Action Buttons
-    const btnSelectWeekdays = document.getElementById('btnSelectWeekdays');
-    const btnClearAll = document.getElementById('btnClearAll');
-    const btnExport = document.getElementById('btnExport');
-    const btnImport = document.getElementById('btnImport');
-    const importFileInput = document.getElementById('importFileInput');
-
-    // Yearly Modal Elements
-    const yearlyModal = document.getElementById('yearlyModal');
-    const btnOpenYearly = document.getElementById('btnOpenYearly');
-    const btnCloseYearly = document.getElementById('btnCloseYearly');
-    const btnCloseYearlyFooter = document.getElementById('btnCloseYearlyFooter');
-    const yearlyYearSelect = document.getElementById('yearlyYearSelect');
-    const yearlyTableBody = document.getElementById('yearlyTableBody');
-    const yearlyTotalDays = document.getElementById('yearlyTotalDays');
-    const yearlyTotalAmount = document.getElementById('yearlyTotalAmount');
-
-    // Helper: Format Currency (VND)
-    function formatVND(amount) {
-      return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
-    }
-
-    // Helper: Format Input Price with commas
-    function formatNumberInput(val) {
-      const cleanVal = String(val).replace(/\D/g, '');
-      if (!cleanVal) return '0';
-      return new Intl.NumberFormat('en-US').format(Number(cleanVal));
-    }
-
-    function parseFormattedNumber(valStr) {
-      return Number(String(valStr).replace(/,/g, '')) || 0;
-    }
-
-    // Helper: Get YYYY-MM Key for LocalStorage
-    function getMonthKey(year, month) {
-      const formattedMonth = String(month + 1).padStart(2, '0');
-      return `${STORAGE_PREFIX}data_${year}-${formattedMonth}`;
-    }
-
-    // Sleek Minimal Toast Notification
-    let toastTimeout;
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMessage = document.getElementById('toastMessage');
-      
-      toastMessage.innerText = msg;
-      toast.classList.remove('translate-y-10', 'opacity-0', 'pointer-events-none');
-      
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        toast.classList.add('translate-y-10', 'opacity-0', 'pointer-events-none');
-      }, 2500);
-    }
-
-    // Load Meal Price
-    function loadMealPrice() {
-      const savedPrice = localStorage.getItem(KEY_MEAL_PRICE);
-      if (savedPrice !== null && !isNaN(savedPrice) && Number(savedPrice) >= 0) {
-        mealPrice = Number(savedPrice);
-      } else {
-        mealPrice = 35000;
-      }
-      priceInput.value = formatNumberInput(mealPrice);
-    }
-
-    // Load Month Data
-    function loadMonthData(year, month) {
-      const key = getMonthKey(year, month);
-      const dataStr = localStorage.getItem(key);
-      if (dataStr) {
+    function getRecords() {
         try {
-          return JSON.parse(dataStr);
-        } catch (e) {
-          return [];
+            return JSON.parse(localStorage.getItem('meal_records')) || {};
+        } catch(e) {
+            return {};
         }
-      }
-      return [];
     }
 
-    // Save Month Data
-    function saveMonthData() {
-      const key = getMonthKey(currentYear, currentMonth);
-      localStorage.setItem(key, JSON.stringify(monthData));
-      updateStats();
+    function saveRecords(records) {
+        localStorage.setItem('meal_records', JSON.stringify(records));
     }
 
-    // Render Calendar Grid
-    function renderCalendar() {
-      calendarGrid.innerHTML = '';
-
-      // Set input YYYY-MM
-      const formattedMonthStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
-      monthPicker.value = formattedMonthStr;
-      currentPeriodLabel.innerText = `${currentYear} / ${String(currentMonth + 1).padStart(2, '0')}`;
-
-      // Update Calendar Header Title
-      calendarTitle.innerText = `LỊCH ĐĂNG KÝ THÁNG ${currentMonth + 1} / ${currentYear}`;
-
-      // Load Month Data
-      monthData = loadMonthData(currentYear, currentMonth);
-
-      // Calculations
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-      
-      // Start day index (0 = Sun, 1 = Mon, ..., 6 = Sat)
-      let firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
-      // Adjust offset so Monday = 0, Sunday = 6
-      let startDayOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-
-      // Padding for Previous Month
-      const prevMonthLastDate = new Date(currentYear, currentMonth, 0).getDate();
-      for (let i = startDayOffset; i > 0; i--) {
-        const prevTile = document.createElement('div');
-        prevTile.className = 'swiss-grid-cell aspect-[4/3] p-2 bg-slate-50 text-slate-300 pointer-events-none select-none flex flex-col justify-between';
-        prevTile.innerHTML = `<span class="text-xs font-mono">${prevMonthLastDate - i + 1}</span>`;
-        calendarGrid.appendChild(prevTile);
-      }
-
-      // Current Month Days
-      const today = new Date();
-      const isCurrentMonthAndYear = (today.getFullYear() === currentYear && today.getMonth() === currentMonth);
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateObj = new Date(currentYear, currentMonth, day);
-        const dayOfWeek = dateObj.getDay(); // 0 = Sun, 6 = Sat
-        const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-        const isToday = isCurrentMonthAndYear && (today.getDate() === day);
-        const isRegistered = monthData.includes(day);
-
-        const tile = document.createElement('div');
-        tile.className = `swiss-grid-cell aspect-[4/3] sm:aspect-square p-2 sm:p-3 cursor-pointer select-none transition-all duration-150 flex flex-col justify-between relative group ${
-          isRegistered 
-            ? 'bg-slate-900 text-white' 
-            : isWeekend 
-              ? 'bg-slate-100/70 text-slate-400 hover:bg-slate-200/80' 
-              : 'bg-white text-slate-900 hover:bg-slate-50'
-        }`;
-
-        // Today indicator badge
-        const todayBadge = isToday 
-          ? `<span class="inline-block px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${isRegistered ? 'bg-white text-slate-900' : 'bg-slate-900 text-white'}">Hôm nay</span>` 
-          : '';
-
-        // Status visual indicator
-        const statusIcon = isRegistered 
-          ? `<div class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-200">
-              <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-              <span>Đã chọn</span>
-             </div>`
-          : `<div class="text-[10px] font-medium tracking-wider ${isWeekend ? 'text-slate-400' : 'text-slate-400 group-hover:text-slate-600'}">Trống</div>`;
-
-        tile.innerHTML = `
-          <div class="flex items-center justify-between w-full">
-            <span class="text-sm sm:text-base font-bold font-mono tracking-tight ${isRegistered ? 'text-white' : isWeekend ? 'text-slate-400' : 'text-slate-900'}">${day}</span>
-            ${todayBadge}
-          </div>
-          <div class="mt-auto">
-            ${statusIcon}
-          </div>
-        `;
-
-        tile.addEventListener('click', () => {
-          toggleDayRegistration(day);
-        });
-
-        calendarGrid.appendChild(tile);
-      }
-
-      // Next month padding to complete 7-col layout
-      const totalTiles = startDayOffset + daysInMonth;
-      const remainingTiles = (7 - (totalTiles % 7)) % 7;
-      for (let j = 1; j <= remainingTiles; j++) {
-        const nextTile = document.createElement('div');
-        nextTile.className = 'swiss-grid-cell aspect-[4/3] p-2 bg-slate-50 text-slate-300 pointer-events-none select-none flex flex-col justify-between';
-        nextTile.innerHTML = `<span class="text-xs font-mono">${j}</span>`;
-        calendarGrid.appendChild(nextTile);
-      }
-
-      updateStats();
-    }
-
-    // Toggle Day Registration
-    function toggleDayRegistration(day) {
-      const idx = monthData.indexOf(day);
-      if (idx > -1) {
-        monthData.splice(idx, 1);
-      } else {
-        monthData.push(day);
-      }
-      monthData.sort((a, b) => a - b);
-      saveMonthData();
-      renderCalendar();
-    }
-
-    // Update Statistics Bar
-    function updateStats() {
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-      let workingDaysCount = 0;
-
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          workingDaysCount++;
+    function initApp() {
+        const savedPrice = localStorage.getItem('meal_price');
+        if (savedPrice) {
+            mealPrice = parseInt(savedPrice, 10);
         }
-      }
+        document.getElementById('priceInput').value = mealPrice;
 
-      const registeredCount = monthData.length;
-      const totalCost = registeredCount * mealPrice;
-
-      statWorkingDays.innerText = workingDaysCount;
-      statRegisteredDays.innerText = registeredCount;
-      statUnitPrice.innerText = formatVND(mealPrice);
-      statTotalCost.innerText = formatVND(totalCost);
-    }
-
-    // Quick Actions
-    btnSelectWeekdays.addEventListener('click', () => {
-      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-      monthData = [];
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dayOfWeek = new Date(currentYear, currentMonth, day).getDay();
-        if (dayOfWeek !== 0 && dayOfWeek !== 6) {
-          monthData.push(day);
+        const monthSelect = document.getElementById('monthSelect');
+        monthSelect.innerHTML = '';
+        for (let i = 0; i < 12; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = `Tháng ${i + 1}`;
+            if (i === currentMonth) opt.selected = true;
+            monthSelect.appendChild(opt);
         }
-      }
-      saveMonthData();
-      renderCalendar();
-      showToast('Đã đăng ký tất cả các ngày làm việc (T2-T6)');
-    });
 
-    btnClearAll.addEventListener('click', () => {
-      monthData = [];
-      saveMonthData();
-      renderCalendar();
-      showToast('Đã xóa toàn bộ đăng ký trong tháng');
-    });
+        const yearSelect = document.getElementById('yearSelect');
+        yearSelect.innerHTML = '';
+        const startYear = currentYear - 3;
+        const endYear = currentYear + 3;
+        for (let y = startYear; y <= endYear; y++) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = `Năm ${y}`;
+            if (y === currentYear) opt.selected = true;
+            yearSelect.appendChild(opt);
+        }
 
-    // Price Input formatting & update
-    priceInput.addEventListener('input', (e) => {
-      const rawVal = parseFormattedNumber(e.target.value);
-      e.target.value = formatNumberInput(rawVal);
-      mealPrice = rawVal;
-      localStorage.setItem(KEY_MEAL_PRICE, mealPrice);
-      updateStats();
-    });
-
-    priceInput.addEventListener('blur', () => {
-      showToast('Đã cập nhật đơn giá suất ăn');
-    });
-
-    // Month Navigation
-    monthPicker.addEventListener('change', (e) => {
-      if (e.target.value) {
-        const [y, m] = e.target.value.split('-').map(Number);
-        currentYear = y;
-        currentMonth = m - 1;
         renderCalendar();
-      }
-    });
+    }
 
-    btnPrevMonth.addEventListener('click', () => {
-      if (currentMonth === 0) {
-        currentMonth = 11;
-        currentYear--;
-      } else {
-        currentMonth--;
-      }
-      renderCalendar();
-    });
+    function savePriceAndRender() {
+        const val = parseInt(document.getElementById('priceInput').value, 10);
+        mealPrice = isNaN(val) ? 0 : val;
+        localStorage.setItem('meal_price', mealPrice);
+        renderCalendar();
+    }
 
-    btnNextMonth.addEventListener('click', () => {
-      if (currentMonth === 11) {
-        currentMonth = 0;
-        currentYear++;
-      } else {
-        currentMonth++;
-      }
-      renderCalendar();
-    });
+    function formatDateKey(year, month, day) {
+        const m = String(month + 1).padStart(2, '0');
+        const d = String(day).padStart(2, '0');
+        return `\({year}-\){m}-${d}`;
+    }
 
-    btnToday.addEventListener('click', () => {
-      const now = new Date();
-      currentYear = now.getFullYear();
-      currentMonth = now.getMonth();
-      renderCalendar();
-    });
+    function renderCalendar() {
+        currentMonth = parseInt(document.getElementById('monthSelect').value, 10);
+        currentYear = parseInt(document.getElementById('yearSelect').value, 10);
 
-    // Export Data to JSON File
-    btnExport.addEventListener('click', () => {
-      const exportObj = {
-        unitPrice: mealPrice,
-        exportedAt: new Date().toISOString(),
-        data: {}
-      };
+        const records = getRecords();
+        const calendarBody = document.getElementById('calendarBody');
+        calendarBody.innerHTML = '';
 
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith(STORAGE_PREFIX + 'data_')) {
-          try {
-            exportObj.data[key] = JSON.parse(localStorage.getItem(key));
-          } catch (e) {}
+        const today = new Date();
+        const todayStr = formatDateKey(today.getFullYear(), today.getMonth(), today.getDate());
+
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+        const totalDays = lastDayOfMonth.getDate();
+
+        let firstDayIndex = firstDayOfMonth.getDay() - 1;
+        if (firstDayIndex === -1) firstDayIndex = 6;
+
+        const prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+        for (let i = firstDayIndex; i > 0; i--) {
+            const prevDayNum = prevMonthLastDay - i + 1;
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell other-month';
+            cell.innerHTML = `
+                <div class="cell-header">
+                    <span class="day-number">${prevDayNum}</span>
+                </div>
+                <div class="status-badge"> </div>
+            `;
+            calendarBody.appendChild(cell);
         }
-      }
 
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `Meal_Registration_Backup_${new Date().toISOString().slice(0,10)}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+        let registeredCount = 0;
 
-      showToast('Đã xuất file sao lưu dữ liệu JSON thành công');
-    });
+        for (let day = 1; day <= totalDays; day++) {
+            const dateStr = formatDateKey(currentYear, currentMonth, day);
+            const isRegistered = !!records[dateStr];
+            if (isRegistered) registeredCount++;
 
-    // Import Data from JSON File
-    btnImport.addEventListener('click', () => {
-      importFileInput.click();
-    });
+            const dateObj = new Date(currentYear, currentMonth, day);
+            const dayOfWeek = dateObj.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 
-    importFileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+            const cell = document.createElement('div');
+            let cellClasses = ['calendar-cell', 'active-day'];
+            if (isWeekend) cellClasses.push('weekend');
+            if (isRegistered) cellClasses.push('registered');
+            else cellClasses.push('unregistered');
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const imported = JSON.parse(evt.target.result);
-          if (imported.unitPrice) {
-            mealPrice = Number(imported.unitPrice);
-            localStorage.setItem(KEY_MEAL_PRICE, mealPrice);
-            priceInput.value = formatNumberInput(mealPrice);
-          }
+            cell.className = cellClasses.join(' ');
+            
+            const isToday = (dateStr === todayStr);
 
-          if (imported.data) {
-            Object.keys(imported.data).forEach(key => {
-              if (key.startsWith(STORAGE_PREFIX + 'data_')) {
-                localStorage.setItem(key, JSON.stringify(imported.data[key]));
-              }
-            });
-          }
+            cell.innerHTML = `
+                <div class="cell-header">
+                    <span class="day-number">${day}</span>
+                    ${isToday ? '<span class="today-badge">Hôm nay</span>' : ''}
+                </div>
+                <div class="status-badge">
+                    ${isRegistered ? '<i class="fa-solid fa-check me-1"></i>Đã Đăng Ký' : 'Trống'}
+                </div>
+            `;
 
-          renderCalendar();
-          showToast('Nhập dữ liệu từ file JSON thành công!');
-        } catch (err) {
-          showToast('Lỗi: File JSON không khớp cấu trúc dữ liệu!');
+            cell.onclick = () => toggleDay(dateStr);
+            calendarBody.appendChild(cell);
         }
-      };
-      reader.readAsText(file);
-      importFileInput.value = '';
-    });
 
-    // Modal Handling
-    function openYearlyModal() {
-      yearlyYearSelect.innerHTML = '';
-      const thisYear = new Date().getFullYear();
-      for (let y = thisYear - 3; y <= thisYear + 1; y++) {
-        const opt = document.createElement('option');
-        opt.value = y;
-        opt.innerText = `Năm ${y}`;
-        if (y === currentYear) opt.selected = true;
-        yearlyYearSelect.appendChild(opt);
-      }
+        const totalCellsSoFar = firstDayIndex + totalDays;
+        const remainingCells = (7 - (totalCellsSoFar % 7)) % 7;
+        for (let i = 1; i <= remainingCells; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'calendar-cell other-month';
+            cell.innerHTML = `
+                <div class="cell-header">
+                    <span class="day-number">${i}</span>
+                </div>
+                <div class="status-badge"> </div>
+            `;
+            calendarBody.appendChild(cell);
+        }
 
-      renderYearlyTable(currentYear);
-      yearlyModal.classList.remove('hidden');
+        document.getElementById('daysInMonthVal').textContent = totalDays;
+        document.getElementById('registeredDaysVal').textContent = `${registeredCount} suất`;
+        document.getElementById('unitPriceVal').textContent = `${mealPrice.toLocaleString('vi-VN')} đ`;
+        const totalMoney = registeredCount * mealPrice;
+        document.getElementById('totalAmountVal').textContent = `${totalMoney.toLocaleString('vi-VN')} đ`;
+
+        renderAnnualSummary();
     }
 
-    function closeYearlyModal() {
-      yearlyModal.classList.add('hidden');
+    function toggleDay(dateStr) {
+        const records = getRecords();
+        records[dateStr] = !records[dateStr];
+        saveRecords(records);
+        renderCalendar();
     }
 
-    function renderYearlyTable(selectedYear) {
-      yearlyTableBody.innerHTML = '';
-      let grandTotalDays = 0;
-      let grandTotalCost = 0;
-
-      for (let m = 0; m < 12; m++) {
-        const mData = loadMonthData(selectedYear, m);
-        const daysCount = mData.length;
-        const estimatedCost = daysCount * mealPrice;
-
-        grandTotalDays += daysCount;
-        grandTotalCost += estimatedCost;
-
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 transition-colors';
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-bold text-slate-900">Tháng ${m + 1}</td>
-          <td class="py-3 px-4 text-center font-mono font-medium">${daysCount} buổi</td>
-          <td class="py-3 px-4 text-right font-mono font-bold text-slate-900">${formatVND(estimatedCost)}</td>
-          <td class="py-3 px-4 text-center">
-            <button onclick="jumpToMonth(${selectedYear}, ${m})" class="px-2.5 py-1 bg-white border border-slate-300 hover:border-slate-900 text-slate-800 text-[11px] font-semibold uppercase tracking-wider transition-colors">
-              Xem lịch
-            </button>
-          </td>
-        `;
-        yearlyTableBody.appendChild(tr);
-      }
-
-      yearlyTotalDays.innerText = `${grandTotalDays} buổi`;
-      yearlyTotalAmount.innerText = formatVND(grandTotalCost);
+    function quickSelectWeekdays() {
+        const records = getRecords();
+        const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+        for (let day = 1; day <= lastDay; day++) {
+            const dateObj = new Date(currentYear, currentMonth, day);
+            const dow = dateObj.getDay();
+            if (dow >= 1 && dow <= 5) {
+                const dateStr = formatDateKey(currentYear, currentMonth, day);
+                records[dateStr] = true;
+            }
+        }
+        saveRecords(records);
+        renderCalendar();
     }
 
-    window.jumpToMonth = function(year, month) {
-      currentYear = year;
-      currentMonth = month;
-      renderCalendar();
-      closeYearlyModal();
-      showToast(`Đã chuyển sang Tháng ${month + 1} / ${year}`);
-    };
+    function clearAllMonth() {
+        if (!confirm('Bạn có chắc chắn muốn xóa tất cả lượt đăng ký trong tháng này?')) return;
+        const records = getRecords();
+        const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+        for (let day = 1; day <= lastDay; day++) {
+            const dateStr = formatDateKey(currentYear, currentMonth, day);
+            delete records[dateStr];
+        }
+        saveRecords(records);
+        renderCalendar();
+    }
 
-    btnOpenYearly.addEventListener('click', openYearlyModal);
-    btnCloseYearly.addEventListener('click', closeYearlyModal);
-    btnCloseYearlyFooter.addEventListener('click', closeYearlyModal);
+    function renderAnnualSummary() {
+        document.getElementById('annualYearText').textContent = `(${currentYear})`;
+        const records = getRecords();
+        const tbody = document.getElementById('annualTableBody');
+        tbody.innerHTML = '';
 
-    yearlyYearSelect.addEventListener('change', (e) => {
-      renderYearlyTable(Number(e.target.value));
-    });
+        let yearTotalDays = 0;
+        let yearTotalMoney = 0;
 
-    // Close modal when clicking outside box
-    yearlyModal.addEventListener('click', (e) => {
-      if (e.target === yearlyModal) closeYearlyModal();
-    });
+        for (let m = 0; m < 12; m++) {
+            const totalDaysInM = new Date(currentYear, m + 1, 0).getDate();
+            let countM = 0;
+            for (let d = 1; d <= totalDaysInM; d++) {
+                const dateStr = formatDateKey(currentYear, m, d);
+                if (records[dateStr]) countM++;
+            }
 
-    window.onload = function() {
-      loadMealPrice();
-      renderCalendar();
-    };
-  </script>
+            const monthMoney = countM * mealPrice;
+            yearTotalDays += countM;
+            yearTotalMoney += monthMoney;
+
+            const tr = document.createElement('tr');
+            if (m === currentMonth) {
+                tr.style.fontWeight = 'bold';
+                tr.style.backgroundColor = '#f3f4f6';
+            }
+            tr.innerHTML = `
+                <td>Tháng ${m + 1}</td>
+                <td class="text-center">${countM} suất</td>
+                <td class="text-end">${mealPrice.toLocaleString('vi-VN')} đ</td>
+                <td class="text-end">${monthMoney.toLocaleString('vi-VN')} đ</td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('annualTotalDays').textContent = `${yearTotalDays} suất`;
+        document.getElementById('annualTotalMoney').textContent = `${yearTotalMoney.toLocaleString('vi-VN')} đ`;
+    }
+
+    function exportData() {
+        const data = {
+            meal_price: mealPrice,
+            meal_records: getRecords()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dang-ky-an-com-backup-${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                if (data.meal_records) saveRecords(data.meal_records);
+                if (data.meal_price) {
+                    localStorage.setItem('meal_price', data.meal_price);
+                    mealPrice = data.meal_price;
+                    document.getElementById('priceInput').value = mealPrice;
+                }
+                alert('Nhập dữ liệu thành công!');
+                renderCalendar();
+            } catch(err) {
+                alert('File không hợp lệ!');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    window.addEventListener('DOMContentLoaded', initApp);
+</script>
+
 </body>
 </html>
